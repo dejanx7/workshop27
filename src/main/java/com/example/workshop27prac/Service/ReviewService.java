@@ -1,6 +1,8 @@
 package com.example.workshop27prac.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,47 @@ public class ReviewService {
         reviewRepo.insertNewReview(reviewDoc);
 
                 
+
+
+    }
+
+    public Boolean updateReview(Document newReview, String id){
+
+        Document reviewDoc = reviewRepo.checkIfReviewExist(id);
+
+        if(reviewDoc == null){
+
+            return false;
+        } else{
+
+            if(!reviewDoc.containsKey("edited")){
+
+                List<Document> listOfReviewEdit = new ArrayList<>();
+                newReview.append("posted", LocalDateTime.now());
+                listOfReviewEdit.add(newReview);
+            
+                reviewDoc.append("edited", listOfReviewEdit);
+                reviewRepo.updateReview(reviewDoc, id);
+            }else{
+
+                List<Document> listOfReviewEdit = reviewDoc.getList("edited", Document.class);
+                newReview.append("posted", LocalDateTime.now());
+                listOfReviewEdit.add(newReview);
+            
+                reviewDoc.append("edited", listOfReviewEdit);
+                reviewRepo.updateReview(reviewDoc, id);
+            }
+            
+
+            // reviewDoc.replace("comment", newReview.getString("comment"));
+            // reviewDoc.replace("rating", newReview.getInteger("rating"));
+            // reviewDoc.replace("posted", LocalDateTime.now());
+            // reviewRepo.updateReview(reviewDoc, id);
+            
+            return true;
+
+        }
+
 
 
     }

@@ -1,9 +1,13 @@
 package com.example.workshop27prac.Controller;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,6 +48,25 @@ public class Controller {
             
             reviewService.insertReview(review);
             return ResponseEntity.ok("Insert Successful!");
+        }
+
+
+
+    }
+
+    @PutMapping(path = "/review/{review_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateReview(@PathVariable String review_id, @RequestBody Document newReview){
+
+        System.out.println(newReview + review_id);
+
+        Boolean isUpdated = reviewService.updateReview(newReview, review_id);
+
+        if(isUpdated == false){
+
+            return ResponseEntity.status(406).body("Update Unsuccessful");
+        }else{
+
+            return ResponseEntity.ok("Update Successful");
         }
 
 
